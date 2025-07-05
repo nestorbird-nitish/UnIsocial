@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Eye, EyeOff, Lock, User2, AlertCircle, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,14 @@ export const Login = () => {
     const [errors, setErrors] = useState({});
     const [generalError, setGeneralError] = useState('');
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/');
+        }
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -26,7 +34,7 @@ export const Login = () => {
         }
 
         console.log("Hello");
-        
+
 
         try {
             const response = await fetch('http://localhost:3000/api/users/login', {
@@ -98,8 +106,8 @@ export const Login = () => {
                                         setLoginData({ ...loginData, username: e.target.value })
                                     }
                                     className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${errors.email
-                                            ? 'border-red-300 bg-red-50 focus:ring-red-300'
-                                            : 'border-gray-300 focus:ring-gray-500'
+                                        ? 'border-red-300 bg-red-50 focus:ring-red-300'
+                                        : 'border-gray-300 focus:ring-gray-500'
                                         }`}
                                     placeholder="Enter your username"
                                 />
@@ -121,8 +129,8 @@ export const Login = () => {
                                         setLoginData({ ...loginData, password: e.target.value })
                                     }
                                     className={`w-full pl-10 pr-10 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors duration-200 ${errors.password
-                                            ? 'border-red-300 bg-red-50 focus:ring-red-300'
-                                            : 'border-gray-300 focus:ring-gray-500'
+                                        ? 'border-red-300 bg-red-50 focus:ring-red-300'
+                                        : 'border-gray-300 focus:ring-gray-500'
                                         }`}
                                     placeholder="Enter your password"
                                 />
@@ -168,7 +176,7 @@ export const Login = () => {
                         </button>
                     </form>
 
-                    
+
                     <div className="mt-6 text-center">
                         <p className="text-gray-600">
                             Don&apos;t have an account?{' '}

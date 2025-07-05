@@ -1,6 +1,8 @@
 import React from 'react';
 import { PostCard } from './PostCard';
 import { FilterButtons } from './FilterButton';
+import { Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
     const samplePosts = [
@@ -42,10 +44,21 @@ const Home = () => {
         }
     ];
 
+    const navigate = useNavigate();
+
     return (
         <div className="min-h-screen bg-gray-50 p-4">
-            <FilterButtons/>
-            <div className="max-w-5xl mx-auto space-y-6">
+            <div className="max-w-3xl mx-auto space-y-6 flex justify-end">
+                <button
+                    onClick={() => navigate("/new-post")}
+                    className="bg-white flex items-center gap-2 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors duration-200 cursor-pointer border border-gray-400"
+                >
+                    <Plus size={20} className='opacity-60'/>
+                    <span>add post</span>
+                </button>
+            </div>
+            <FilterButtons />
+            <div className="max-w-3xl mx-auto space-y-6">
                 {samplePosts.map((post) => (
                     <PostCard key={post.id} post={post} />
                 ))}

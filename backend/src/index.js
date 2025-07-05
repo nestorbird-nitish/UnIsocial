@@ -1,6 +1,7 @@
 import express from 'express'
 import userRouter from './routers/user.routes.js';
 import cors from 'cors';
+import postRouter from './routers/post.routes.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 
 
 app.use("/api/users", userRouter);
+app.use("/api/posts", postRouter);
 
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);

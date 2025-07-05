@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { User, Search, Flame } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { isLoggedIn } from '../utils/auth';
 
 const Navbar = () => {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleSearch = (e) => {
@@ -21,6 +21,7 @@ const Navbar = () => {
     };
 
     const navigate = useNavigate();
+    const token = localStorage.getItem('token');
 
 
     return (
@@ -40,9 +41,9 @@ const Navbar = () => {
 
 
                     <div className="flex items-center space-x-4">
-                        {!isLoggedIn ? (
+                        {!token ? (
                             <button
-                                onClick={() => navigate("/auth")}
+                                onClick={() => navigate("/login")}
                                 className="bg-white text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors duration-200 cursor-pointer border border-gray-400"
                             >
                                 Login
