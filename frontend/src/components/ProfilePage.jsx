@@ -22,7 +22,7 @@ const ProfilePage = () => {
 
 
     useEffect(() => {
-        
+
 
         const fetchUser = async () => {
             setLoading(true);
@@ -149,8 +149,8 @@ const ProfilePage = () => {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`py-4 px-1 text-sm font-medium border-b-2 transition-colors duration-200 ${activeTab === tab
-                                        ? 'border-gray-900 text-gray-900'
-                                        : 'border-transparent text-gray-600 hover:text-gray-900'
+                                    ? 'border-gray-900 text-gray-900'
+                                    : 'border-transparent text-gray-600 hover:text-gray-900'
                                     }`}
                             >
                                 {tab}
@@ -164,20 +164,24 @@ const ProfilePage = () => {
             <div className="max-w-3xl mx-auto px-4 py-6">
                 {activeTab === 'Posts' && isLoggedIn && (
                     <div className="space-y-6">
-                        {posts.length === 0 ? (
-                            <div className="text-center py-12 text-gray-500">
-                                No posts found.
-                            </div>
+                        {loading ? (
+                            <div className="text-center py-12 text-gray-500">Loading posts...</div>
+                        ) : posts.length === 0 ? (
+                            <div className="text-center py-12 text-gray-500">No posts found.</div>
                         ) : (
                             posts.map((post) => (
-                                (!loading && (<PostCard key={post.id} post={post} currentUser={user} isPersonalCard={isPersonalCard} />))
+                                <PostCard
+                                    key={post.id}
+                                    post={post}
+                                    user={user}
+                                    isPersonalCard={isPersonalCard}
+                                />
                             ))
                         )}
                     </div>
                 )}
-
-
             </div>
+
         </div>
     );
 };

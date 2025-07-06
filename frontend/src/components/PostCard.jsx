@@ -15,7 +15,7 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
         createdAt,
     } = post || {};
 
-    const [isLiked, setIsLiked] = useState(post?.isLiked || false);
+    const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(initialLikes);
     const [commentCount, setCommentCount] = useState(initialComments);
     const [showFullCaption, setShowFullCaption] = useState(false);
@@ -32,25 +32,52 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
 
 
     useEffect(() => {
-        const fetchLikeCount = async (postId) => {
+        const token = localStorage.getItem('token');
+
+        const fetchLikeCount = async () => {
             try {
-                const res = await fetch(`http://localhost:3000/api/posts/${postId}/likes`);
+                const res = await fetch(`http://localhost:3000/api/posts/${post.id}/likes`);
                 const data = await res.json();
-
-                console.log(data);
-                
-                if (!res.ok) {
-                    throw new Error(data.message || 'Failed to fetch like count');
-                }
-
-                setLikeCount(data.likeCount);
+                if (res.ok) setLikeCount(data.likeCount);
             } catch (err) {
                 console.error("Error fetching like count:", err.message);
             }
         };
+        const fetchCommentCount = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/api/posts/${post.id}/commentsCount`);
+                const data = await res.json();
+                if (res.ok) setCommentCount(data.commentCount);
+            } catch (err) {
+                console.error("Error fetching comment count:", err.message);
+            }
+        };
 
-        fetchLikeCount(post.id);
-    }, [post])
+
+        const checkIfLiked = async () => {
+            try {
+                const res = await fetch(`http://localhost:3000/api/posts/${post.id}/is-liked`, {
+                    headers: {
+                        'Authorization': token,
+                    },
+                });
+
+                const data = await res.json();
+                console.log(data);
+                
+                console.log(data.isLiked);
+                
+                if (res.ok) setIsLiked(data.isLiked);
+            } catch (err) {
+                console.error('Failed to check like status:', err);
+            }
+        };
+
+        fetchLikeCount();
+        fetchCommentCount();
+        checkIfLiked();
+    }, []);
+
 
     const handleLike = async () => {
         if (isLiking) return;
@@ -179,9 +206,6 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
 
             const data = await response.json();
 
-            console.log(data);
-
-
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to delete post');
             }
@@ -205,13 +229,10 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
         ? caption
         : `${caption.substring(0, maxCaptionLength)}...`;
 
-        
+
     if (isDeleted) {
         return null;
     }
-
-    console.log(isPersonalCard);
-
 
     return (
         <div className="relative bg-white rounded-lg border border-gray-200 shadow-sm max-w-3xl mx-auto overflow-hidden">
@@ -313,14 +334,14 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
                         <button
                             onClick={handleLike}
                             disabled={isLiking}
-                            className={`flex items-center space-x-2 transition-all duration-200 disabled:opacity-50 ${isLiked
-                                ? 'text-red-500 hover:text-red-600'
-                                : 'text-gray-600 hover:text-gray-900'
-                                }`}
+                            className={`flex items-center space-x-2 transition-all duration-200 disabled:opacity-50 `}
                         >
                             <Heart
                                 size={20}
-                                className={isLiked ? 'fill-current' : ''}
+                                className={`${isLiked
+                                    ? 'fill-current text-red-500'
+                                    : 'text-gray-600'
+                                    }`}
                             />
                             <span className="text-sm font-medium">{likeCount}</span>
                         </button>

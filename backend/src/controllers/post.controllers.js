@@ -188,8 +188,7 @@ export const commentPost = async (req, res) => {
 export const getLikeCountByPostId = async (req, res) => {
     const { postId } = req.params;
 
-    console.log(postId);
-    
+
     if (!postId) {
         return res.status(400).json({ success: false, message: 'Post ID is required' });
     }
@@ -203,6 +202,56 @@ export const getLikeCountByPostId = async (req, res) => {
     } catch (error) {
         console.error('Error getting like count:', error);
         res.status(500).json({ success: false, message: 'Failed to get like count' });
+    }
+};
+export const getCommentCountByPostId = async (req, res) => {
+    const { postId } = req.params;
+
+
+    if (!postId) {
+        return res.status(400).json({ success: false, message: 'Post ID is required' });
+    }
+
+    try {
+        const commentCount = await prisma.comment.count({
+            where: { postId },
+        });
+
+        res.status(200).json({ success: true, postId, commentCount });
+    } catch (error) {
+        console.error('Error getting comment count:', error);
+        res.status(500).json({ success: false, message: 'Failed to get comment count' });
+    }
+};
+
+
+export const isLikedByCurrentUser = async (req, res) => {
+    const { postId } = req.params;
+    const userId = req.userId;
+
+    if (!postId || !userId) {
+        return res.status(400).json({ success: false, message: 'Post ID and user must be provided' });
+    }
+
+    try {
+        const like = await prisma.like.findUnique({
+            where: {
+                userId_postId: {
+                    userId,
+                    postId,
+                },
+            },
+        });
+
+        const isLiked = !!like;
+
+        return res.status(200).json({
+            success: true,
+            isLiked,
+        });
+    } catch (error) {
+        console.error('Error checking like status:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
     }
 };
 

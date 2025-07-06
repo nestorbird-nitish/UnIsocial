@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
-
+    
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
@@ -14,13 +14,11 @@ const Navbar = () => {
         }
     };
 
-    const handleProfileClick = () => {
-
-        console.log('Navigate to profile');
-    };
+    
 
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
 
 
     return (
@@ -69,13 +67,12 @@ const Navbar = () => {
                                 </div>
 
                                 <button
-                                    onClick={handleProfileClick}
+                                    onClick={() => navigate(`/user/${username}`)}
                                     className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors duration-200"
                                 >
                                     <div className="w-10 h-10 cursor-pointer bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors duration-200">
                                         <User size={18} className="text-gray-600" />
                                     </div>
-                                    {/* <span className="text-sm font-medium hidden sm:block">Profile</span> */}
                                 </button>
 
                             </div>

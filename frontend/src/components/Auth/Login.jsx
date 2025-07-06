@@ -33,7 +33,6 @@ export const Login = () => {
             return;
         }
 
-        console.log("Hello");
 
 
         try {
@@ -50,6 +49,7 @@ export const Login = () => {
             }
 
             localStorage.setItem('token', data.token);
+            localStorage.setItem('username', data.username);
             navigate('/');
         } catch (error) {
             setGeneralError(error.message || 'Something went wrong');
