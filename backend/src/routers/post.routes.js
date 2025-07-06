@@ -11,6 +11,7 @@ import {
   getPostById,
   getAllPosts,
   generateAiCaption,
+  generateAiPostCategory,
 } from '../controllers/post.controllers.js';
 import { authenticateUser } from '../middlewares/authUser.js';
 
@@ -18,6 +19,8 @@ const postRouter = express.Router();
 
 
 postRouter.post('/getAiCaption', authenticateUser, generateAiCaption);
+postRouter.post('/getAiPostCategory', authenticateUser, generateAiPostCategory);
+
 postRouter.get('/', getAllPosts);
 
 postRouter.post('/', authenticateUser, createPost);

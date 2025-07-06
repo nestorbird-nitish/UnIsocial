@@ -14,6 +14,7 @@ const CreatePost = () => {
     const [success, setSuccess] = useState('');
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
+    const [category, setCategory] = useState('TECHNOLOGY');
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -110,7 +111,7 @@ const CreatePost = () => {
         try {
             const token = localStorage.getItem('token');
             console.log(token);
-            
+
             const response = await fetch('http://localhost:3000/api/posts/getAiCaption', {
                 method: 'POST',
                 headers: {
@@ -122,13 +123,13 @@ const CreatePost = () => {
 
             const data = await response.json();
 
-            console.log(data);            
+            console.log(data);
 
             if (!response.ok || !data.success) {
                 throw new Error(data.message || 'Failed to get AI caption');
             }
 
-            setCaption(data.aiCaption); 
+            setCaption(data.aiCaption);
 
         } catch (error) {
             console.error('Error generating AI caption:', error.message);
@@ -139,6 +140,38 @@ const CreatePost = () => {
             setAiPrompt('');
         }
     };
+
+    const handleGenerateCategory = async () => {
+        if (!caption.trim()) return;
+
+        setIsGenerating(true);
+
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('http://localhost:3000/api/posts/getAiPostCategory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                },
+                body: JSON.stringify({ caption }),  
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.message || 'AI category generation failed');
+            }
+
+            setCategory(data.category);
+        } catch (error) {
+            console.error('Error generating AI category:', error.message);
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
 
 
 
@@ -168,16 +201,19 @@ const CreatePost = () => {
                 imageUrl = await uploadImageToCloudinary(imageFile);
             }
 
+            // category by ai
+            await handleGenerateCategory();
+            
 
             const postData = {
                 caption: caption.trim(),
                 ...(imageUrl && { image: imageUrl }),
-                category: "MUSIC"
+                category: category
             };
 
+            console.log(postData);        
 
             await sendBackendRequest(postData, token);
-
 
             setSuccess('Post created successfully!');
 

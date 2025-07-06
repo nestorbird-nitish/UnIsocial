@@ -1,3 +1,4 @@
+// Home.jsx
 import React, { useEffect, useState } from 'react';
 import { FilterButtons } from './FilterButton';
 import { Plus } from 'lucide-react';
@@ -7,26 +8,37 @@ import { HomePostCard } from './HomePostCard';
 const Home = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedCategory, setSelectedCategory] = useState('All');
+
     const navigate = useNavigate();
 
+    const fetchPosts = async (category) => {
+
+        console.log(category);
+        
+        setLoading(true);
+        try {
+            const query = category && category !== 'All' ? `?category=${encodeURIComponent(category)}` : '';
+            const res = await fetch(`http://localhost:3000/api/posts${query}`);
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.message || "Failed to fetch posts");
+
+            setPosts(data.posts);
+        } catch (err) {
+            console.error("Error fetching posts:", err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const res = await fetch("http://localhost:3000/api/posts");
-                const data = await res.json();
+        fetchPosts(selectedCategory);
+    }, [selectedCategory]);
 
-                if (!res.ok) throw new Error(data.message || "Failed to fetch posts");
-
-                setPosts(data.posts);
-            } catch (err) {
-                console.error("Error fetching posts:", err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPosts();
-    }, []);
+    const handleFilterChange = (category) => {
+        setSelectedCategory(category);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 py-4">
@@ -40,7 +52,7 @@ const Home = () => {
                 </button>
             </div>
 
-            <FilterButtons />
+            <FilterButtons onFilterChange={handleFilterChange} />
 
             <div className="max-w-3xl mx-auto space-y-6 mt-4">
                 {loading ? (

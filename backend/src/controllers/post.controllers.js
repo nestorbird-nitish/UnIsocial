@@ -313,25 +313,33 @@ export const getPostById = async (req, res) => {
     }
 };
 
-
 export const getAllPosts = async (req, res) => {
     try {
+        const { category } = req.query;
+
+        const normalizedCategory = category?.toUpperCase();
+
+        const filter = category && category !== 'All'
+            ? { category: normalizedCategory }
+            : {};
+
         const posts = await prisma.post.findMany({
+            where: filter,
             orderBy: {
                 createdAt: 'desc',
             },
         });
 
         res.status(200).json({ success: true, posts });
-    } catch (error) {
-        console.error('Error fetching all posts:', error);
+    } catch (err) {
+        console.error("Error fetching posts:", err.message);
         res.status(500).json({ success: false, message: 'Failed to fetch posts' });
     }
 };
 
 
 
-export const generateAiCaption = async(req, res) => {
+export const generateAiCaption = async (req, res) => {
     const ai_prompt = req.body.aiPrompt;
 
     const API_KEY = process.env.GEMINI_API_KEY;
@@ -345,11 +353,81 @@ export const generateAiCaption = async(req, res) => {
 
         const response = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: prompt });
 
-        return res.status(200).json({success: true, aiCaption: response.text || 'No response from ai'});
+        return res.status(200).json({ success: true, aiCaption: response.text || 'No response from AI' });
 
     } catch (error) {
         console.error('Error fetching all posts:', error);
-        res.status(500).json({ success: false, message: 'Failed to generate caption from ai' });
+        res.status(500).json({ success: false, message: 'Failed to generate caption from AI' });
+    }
+
+}
+
+export const generateAiPostCategory = async (req, res) => {
+    const caption = req.body.caption;
+
+    const API_KEY = process.env.GEMINI_API_KEY;
+
+    const ai = new GoogleGenAI({ API_KEY });
+
+
+    const categories = [
+        'All',
+        'Technology',
+        'Music',
+        'Gaming',
+        'Sports',
+        'News',
+        'Entertainment',
+        'Education',
+        'Travel',
+        'Food',
+        'Fashion',
+        'Science',
+        'Art',
+        'Health',
+        'Business',
+        'Comedy',
+        'Movies',
+        'Books',
+        'Photography',
+        'Fitness'
+    ];
+
+    try {
+        const prompt = `
+        You are an AI trained to categorize social media post captions.
+        Based on the caption provided, choose the most relevant category from this list:
+
+        ${categories.join(', ')}
+
+        Caption: "${caption}"
+
+        Respond with only one category from the list. Do not include any explanation or extra text.
+        `;
+
+        const response = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: prompt });
+
+        const raw = response.text.trim();
+
+
+        const matchedCategory = categories.find(
+            (cat) => cat.toLowerCase() === raw.toLowerCase()
+        );
+
+
+        if (!matchedCategory) {
+            return res.status(200).json({
+                success: true,
+                category: 'TECHNOLOGY',
+                message: 'AI did not match any category. Defaulting to "All".',
+            });
+        }
+
+        return res.status(200).json({ success: true, category: matchedCategory });
+
+    } catch (error) {
+        console.error('Error fetching all posts:', error);
+        res.status(500).json({ success: false, message: 'Failed to generate category from AI' });
     }
 
 }

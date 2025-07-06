@@ -1,34 +1,13 @@
 import React, { useState } from 'react';
+import { filters } from '../constants/filter.js';
 
-export const FilterButtons = () => {
+
+export const FilterButtons = ({ onFilterChange }) => {
     const [selectedFilter, setSelectedFilter] = useState('All');
-
-    const filters = [
-        'All',
-        'Technology',
-        'Music',
-        'Gaming',
-        'Sports',
-        'News',
-        'Entertainment',
-        'Education',
-        'Travel',
-        'Food',
-        'Fashion',
-        'Science',
-        'Art',
-        'Health',
-        'Business',
-        'Comedy',
-        'Movies',
-        'Books',
-        'Photography',
-        'Fitness'
-    ];
 
     const handleFilterClick = (filter) => {
         setSelectedFilter(filter);
-        console.log('Selected filter:', filter);
+        onFilterChange(filter);
     };
 
     return (
@@ -46,8 +25,8 @@ export const FilterButtons = () => {
                                 key={filter}
                                 onClick={() => handleFilterClick(filter)}
                                 className={`flex-shrink-0 px-4 py-2 rounded-lg cursor-pointer text-sm font-medium transition-all duration-200 whitespace-nowrap ${selectedFilter === filter
-                                        ? 'bg-gray-900 text-white shadow-sm'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                                    ? 'bg-gray-900 text-white shadow-sm'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
                                     }`}
                             >
                                 {filter}
