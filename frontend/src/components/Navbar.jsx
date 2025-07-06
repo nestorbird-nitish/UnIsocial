@@ -12,7 +12,7 @@ const Navbar = () => {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
 
-    // Debounce & fetch
+    
     useEffect(() => {
         if (!searchQuery.startsWith('@') || searchQuery.length < 2) {
             setUsers([]);

@@ -143,7 +143,7 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            {/* Tabs */}
+            
             <div className="bg-white">
                 <div className="max-w-3xl mx-auto px-4">
                     <div className="flex space-x-8">
