@@ -8,6 +8,8 @@ import {
   getCommentsByPostId,
   isLikedByCurrentUser,
   getCommentCountByPostId,
+  getPostById,
+  getAllPosts,
 } from '../controllers/post.controllers.js';
 import { authenticateUser } from '../middlewares/authUser.js';
 
@@ -22,6 +24,8 @@ postRouter.get('/:postId/likes', getLikeCountByPostId);
 postRouter.get('/:postId/commentsCount', getCommentCountByPostId);
 postRouter.get('/:postId/comments', getCommentsByPostId);
 postRouter.get('/:postId/is-liked', authenticateUser, isLikedByCurrentUser);
+postRouter.get('/:postId', getPostById);
+postRouter.get('/', getAllPosts);
 
 
 export default postRouter;

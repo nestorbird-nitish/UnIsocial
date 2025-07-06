@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Heart, MessageCircle, User, Trash2, X, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../utils/getDate';
-import { checkIsCurrentUser } from '../utils/checkCurrentUser';
+import { checkIsCurrentUser, checkIsCurrentUserWithUserId } from '../utils/checkCurrentUser';
 
-export const PostCard = ({ post, user, isPersonalCard }) => {
+export const HomePostCard = ({ post }) => {
     const navigate = useNavigate();
 
     const {
@@ -28,6 +28,9 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isDeleted, setIsDeleted] = useState(false);
+    const [user, setUser] = useState(null);
+    const [isPersonalCard, setIsPersonalCard] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const maxCaptionLength = 150;
 
@@ -78,6 +81,42 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
         fetchCommentCount();
         checkIfLiked();
     }, []);
+
+    console.log(isPersonalCard);
+    
+    useEffect(() => {
+        const fetchUser = async () => {
+            if (!post?.authorId) return;
+
+            setIsPersonalCard(await checkIsCurrentUserWithUserId(post.authorId));
+
+            setLoading(true);
+            setError('');
+
+            try {
+                const res = await fetch(`http://localhost:3000/api/users/${post.authorId}/user`, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) throw new Error(data.message || 'Failed to fetch user');
+
+                setUser(data.user);
+            } catch (err) {
+                console.error('Error fetching user:', err.message);
+                setError(err.message);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUser();
+    }, [post?.authorId]);
+
 
 
     const handleLike = async () => {

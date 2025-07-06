@@ -137,8 +137,6 @@ This is an AI-generated post that captures the essence of your idea. Feel free t
             throw new Error('Unauthorized user');
         }
 
-        console.log(token);
-
 
         setIsCreatingPost(true);
         setError('');

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     ChevronLeft, ChevronRight, Settings, LogOut, Heart, MessageCircle,
     Share, MoreHorizontal, MapPin, Calendar, ExternalLink
@@ -11,14 +11,16 @@ import { checkIsCurrentUser } from '../utils/checkCurrentUser';
 const ProfilePage = () => {
     const { username } = useParams();
     const [activeTab, setActiveTab] = useState('Posts');
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null); 
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isPersonalCard, setIsPersonalCard] = useState(false);
+    const navigate = useNavigate();
 
-    const tabs = ['Posts', 'Media', 'Likes', 'About'];
+
+    const tabs = ['Posts', 'Likes', 'About'];
 
 
     useEffect(() => {
@@ -60,8 +62,9 @@ const ProfilePage = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
         setIsLoggedIn(false);
-        alert('Logged out');
+        navigate("/login");
     };
 
     if (loading) {

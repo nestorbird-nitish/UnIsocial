@@ -287,3 +287,44 @@ export const getCommentsByPostId = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to fetch comments' });
     }
 };
+
+
+
+export const getPostById = async (req, res) => {
+    const { postId } = req.params;
+
+    if (!postId) {
+        return res.status(400).json({ success: false, message: 'Post ID is required' });
+    }
+
+    try {
+        const post = await prisma.post.findUnique({
+            where: { id: postId },
+        });
+
+        if (!post) {
+            return res.status(404).json({ success: false, message: 'Post not found' });
+        }
+
+        res.status(200).json({ success: true, post });
+    } catch (error) {
+        console.error("Error fetching post:", error.message);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+};
+
+
+export const getAllPosts = async (req, res) => {
+    try {
+        const posts = await prisma.post.findMany({
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+
+        res.status(200).json({ success: true, posts });
+    } catch (error) {
+        console.error('Error fetching all posts:', error);
+        res.status(500).json({ success: false, message: 'Failed to fetch posts' });
+    }
+};

@@ -24,3 +24,28 @@ export const checkIsCurrentUser = async (username) => {
         return false; // fallback to false on error
     }
 };
+
+export const checkIsCurrentUserWithUserId = async (userId) => {
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/users/${userId}/is-current-user-userId`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: token,
+            },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to verify user');
+        }
+
+        return data.isCurrentUser;
+    } catch (error) {
+        console.error('Error checking current user:', error.message);
+        return false;
+    }
+};
