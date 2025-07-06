@@ -185,3 +185,34 @@ export const checkIsCurrentUserUserId = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal server error' });
     }
 };
+
+
+
+
+export const searchUsersByUsername = async (req, res) => {
+    const { query } = req.query;
+
+    if (!query || query.trim() === '') {
+        return res.status(400).json({success: false, message: 'Search query is required' });
+    }
+
+    try {
+        const users = await prisma.user.findMany({
+            where: {
+                username: {
+                    contains: query,
+                    mode: 'insensitive',
+                },
+            },
+            select: {
+                id: true,
+                username: true,
+            },
+        });
+
+        res.json({success: true, users });
+    } catch (error) {
+        console.error("Search error:", error.message);
+        res.status(500).json({ success: true, message: 'Internal Server Error' });
+    }
+};

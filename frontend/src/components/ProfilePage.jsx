@@ -112,7 +112,7 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="flex items-center space-x-3">
-                            {isLoggedIn && (
+                            {username == localStorage.getItem('username') && isLoggedIn && (
                                 <>
                                     <button
                                         onClick={handleLogout}
