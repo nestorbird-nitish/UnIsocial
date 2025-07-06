@@ -293,7 +293,7 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
                 </div>
             )}
 
-            {/* User Info */}
+            
             <div className="p-3 border-b border-gray-100">
                 <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
@@ -313,7 +313,7 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
                 </div>
             </div>
 
-            {/* Caption */}
+            
             {caption && (
                 <div className="p-4 pb-2">
                     <p className="text-gray-900 text-sm leading-relaxed whitespace-pre-wrap">
@@ -333,7 +333,7 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
                 </div>
             )}
 
-            {/* Post Image */}
+            
             {image && (
                 <div className="relative w-full">
                     <img
@@ -348,7 +348,7 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
                 </div>
             )}
 
-            {/* Like & Comment Buttons */}
+            
             <div className="p-4 pt-3 border-t border-gray-100">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-6">

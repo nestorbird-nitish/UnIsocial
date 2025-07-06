@@ -19,16 +19,16 @@ const CreatePost = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        
+
         setError('');
 
-        
+
         if (file.size > 10 * 1024 * 1024) {
             setError('Image size must be less than 10MB');
             return;
         }
 
-        
+
         if (!file.type.startsWith('image/')) {
             setError('Please select a valid image file');
             return;
@@ -65,6 +65,8 @@ const CreatePost = () => {
             throw new Error('Failed to upload image to Cloudinary');
         }
     };
+
+
 
     const sendBackendRequest = async (postData, token) => {
         try {
@@ -105,22 +107,40 @@ const CreatePost = () => {
 
         setIsGenerating(true);
 
-        // Simulate AI generation (replace with actual AI API call)
-        setTimeout(() => {
-            const generatedPost = `Based on your prompt "${aiPrompt}", here's a generated post:
+        try {
+            const token = localStorage.getItem('token');
+            console.log(token);
+            
+            const response = await fetch('http://localhost:3000/api/posts/getAiCaption', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token,
+                },
+                body: JSON.stringify({ aiPrompt }),
+            });
 
-✨ ${aiPrompt.charAt(0).toUpperCase() + aiPrompt.slice(1)} ✨
+            const data = await response.json();
 
-This is an AI-generated post that captures the essence of your idea. Feel free to edit and customize it to match your voice and style!
+            console.log(data);            
 
-#AIGenerated #Creative #PostIdea`;
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Failed to get AI caption');
+            }
 
-            setCaption(generatedPost);
+            setCaption(data.aiCaption); 
+
+        } catch (error) {
+            console.error('Error generating AI caption:', error.message);
+            setError(error.message || 'Something went wrong while generating the caption');
+        } finally {
             setIsGenerating(false);
             setShowAIModal(false);
             setAiPrompt('');
-        }, 2000);
+        }
     };
+
+
 
     const handleCreatePost = async () => {
 
@@ -128,8 +148,6 @@ This is an AI-generated post that captures the essence of your idea. Feel free t
             setError('Please add an image or caption to create a post');
             return;
         }
-
-
 
         const token = localStorage.getItem('token');
 
@@ -155,7 +173,7 @@ This is an AI-generated post that captures the essence of your idea. Feel free t
                 caption: caption.trim(),
                 ...(imageUrl && { image: imageUrl }),
                 category: "MUSIC"
-            };            
+            };
 
 
             await sendBackendRequest(postData, token);

@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-
+import { GoogleGenAI } from "@google/genai";
 
 export const createPost = async (req, res) => {
     const { caption, image, category } = req.body;
@@ -328,3 +328,28 @@ export const getAllPosts = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to fetch posts' });
     }
 };
+
+
+
+export const generateAiCaption = async(req, res) => {
+    const ai_prompt = req.body.aiPrompt;
+
+    const API_KEY = process.env.GEMINI_API_KEY;
+
+    const ai = new GoogleGenAI({ API_KEY });
+
+    try {
+        const prompt = `
+        You are a creative social media assistant. Based on the following user input, generate a short, catchy, and engaging post caption. Keep it informal and relatable. Use emojis where appropriate. Limit it to 1–2 sentences.
+        User input: "${ai_prompt}"`;
+
+        const response = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: prompt });
+
+        return res.status(200).json({success: true, aiCaption: response.text || 'No response from ai'});
+
+    } catch (error) {
+        console.error('Error fetching all posts:', error);
+        res.status(500).json({ success: false, message: 'Failed to generate caption from ai' });
+    }
+
+}
