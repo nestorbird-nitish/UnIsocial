@@ -70,3 +70,67 @@ export const login = async (req, res, next) => {
     }
 }
 
+
+export const getUserByUsername = async (req, res) => {
+    const { username } = req.params;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: 'Username is required' });
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { username },
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                createdAt: true,
+                posts: {
+                    select: {
+                        id: true,
+                        caption: true,
+                        image: true,
+                        createdAt: true,
+                        category: true,
+                    }
+                },
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).json({ success: false, message: 'Failed to retrieve user' });
+    }
+};
+
+
+export const checkIsCurrentUser = async (req, res) => {
+    const { username } = req.params;
+
+    if (!username) {
+        return res.status(400).json({ success: false, message: 'Username is required' });
+    }
+    
+
+    try {
+        
+        const loggedInUsername = req.username;
+
+        if (!loggedInUsername) {
+            return res.status(401).json({ success: false, message: 'Unauthorized' });
+        }
+
+        const isCurrentUser = loggedInUsername === username;
+
+        return res.status(200).json({ success: true, isCurrentUser });
+    } catch (error) {
+        console.error('Error checking current user:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};

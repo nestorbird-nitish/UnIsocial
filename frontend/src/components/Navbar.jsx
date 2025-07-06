@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { User, Search, Flame } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { isLoggedIn } from '../utils/auth';
 
 const Navbar = () => {
 

@@ -16,7 +16,7 @@ function App() {
         <Route path='/new-post' element={<CreatePost/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
-        <Route path='/profile' element={<ProfilePage/>}/>
+        <Route path='/user/:username' element={<ProfilePage/>}/>
       </Routes>
     </Router>
   )

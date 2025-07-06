@@ -21,12 +21,36 @@ model User {
   updatedAt DateTime  @default(now())
 }
 
+enum Category {
+  TECHNOLOGY
+  MUSIC
+  GAMING
+  SPORTS
+  NEWS
+  ENTERTAINMENT
+  EDUCATION
+  TRAVEL
+  FOOD
+  FASHION
+  SCIENCE
+  ART
+  HEALTH
+  BUSINESS
+  COMEDY
+  MOVIES
+  BOOKS
+  PHOTOGRAPHY
+  FITNESS
+}
+
+
 model Post {
   id        String    @id @default(uuid())
   caption   String
-  image     String
+  image     String?
   author    User      @relation(fields: [authorId], references: [id])
-  authorId  Int       
+  authorId  Int 
+  category  Category   @default(COMEDY)      
 
   likes     Like[]
   comments  Comment[]

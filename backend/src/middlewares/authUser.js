@@ -12,8 +12,8 @@ export const authenticateUser = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
         req.userId = decoded.userId;
+        req.username = decoded.username;
     } catch (error) {
         return res.status(400).json({
             success: false,

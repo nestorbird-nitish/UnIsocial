@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { isLoggedIn } from '../../utils/auth';
 
 const Signup = () => {
     const [showPassword, setShowPassword] = useState(false);
