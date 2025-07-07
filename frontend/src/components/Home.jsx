@@ -21,7 +21,7 @@ const Home = () => {
 
     const fetchPosts = async (category) => {
 
-        console.log(category);
+
         
         setLoading(true);
         try {

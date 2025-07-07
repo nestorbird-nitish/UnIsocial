@@ -149,17 +149,7 @@ export const Login = () => {
                             {errors.password && <ErrorText message={errors.password} />}
                         </div>
 
-                        {/* Forgot password */}
-                        <div className="flex justify-end">
-                            <button
-                                type="button"
-                                className="text-sm text-gray-600 hover:text-gray-900 transition duration-200"
-                            >
-                                Forgot password?
-                            </button>
-                        </div>
-
-                        {/* Submit */}
+                        
                         <button
                             type="submit"
                             disabled={isLoading}
