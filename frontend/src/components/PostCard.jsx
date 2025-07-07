@@ -383,7 +383,7 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
 
 
             {showCommentDialog && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 backdrop-blur-sm bg-neutral-700/50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-lg font-semibold text-gray-900">Add Comment</h3>
@@ -418,7 +418,7 @@ export const PostCard = ({ post, user, isPersonalCard }) => {
                                 <button
                                     onClick={handleSubmitComment}
                                     disabled={isCommenting || !commentText.trim()}
-                                    className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                                    className="flex items-center space-x-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                                 >
                                     <Send size={16} />
                                     <span>{isCommenting ? 'Posting...' : 'Post'}</span>

@@ -12,6 +12,13 @@ const Home = () => {
 
     const navigate = useNavigate();
 
+
+    const token = localStorage.getItem('token');
+    if(!token){
+        navigate("/login");
+    }
+
+
     const fetchPosts = async (category) => {
 
         console.log(category);
